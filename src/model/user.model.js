@@ -19,7 +19,7 @@ const usersSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      index: true, // make field searchable it also make the performace low (don;t assign all the field)
+      index: true, // make field searchable it also make the performace low (don't assign all the field)
     },
     password: {
       type: "String",
@@ -40,10 +40,10 @@ const usersSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-usersSchema.pre("save", (next) => {
-  console.log("Pre hook middle to run before saving the data");
-  next();
-});
+// usersSchema.pre("save", (next) => {
+//   console.log("Pre hook middle to run before saving the data");
+//   next();
+// });
 usersSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bycrpt.hash(this.password, 10);
@@ -51,11 +51,10 @@ usersSchema.pre("save", async function (next) {
 });
 // your custom method
 usersSchema.methods.isPasswordCorrect = async function (password) {
-  console.log("Pre hook middleware 2");
   return await bycrpt.compare(password, this.password);
 };
 usersSchema.methods.generateAcessToken = async function () {
-  console.log("Pre hook middleware 3");
+  console.log("custom middMethodleware for  generateAcessToken");
   return jwt.sign(
     {
       _id: this._id,
@@ -69,7 +68,7 @@ usersSchema.methods.generateAcessToken = async function () {
   );
 };
 usersSchema.methods.generateRefreshToken = async function () {
-  console.log("Pre hook middleware 4");
+  console.log("custom Method for generateRefreshToken");
   return jwt.sign(
     {
       _id: this._id,
